@@ -183,7 +183,7 @@ def get_tpu_sampler(dataset: Dataset):
 class Trainer:
     """
     Trainer is a simple but feature-complete training and eval loop for PyTorch,
-    optimized for ?? Transformers.
+    optimized for 🤗 Transformers.
 
     Args:
         model (:class:`~transformers.PreTrainedModel`, `optional`):
@@ -234,7 +234,7 @@ class Trainer:
         do_save_full_model: bool = True,
         do_save_adapters: bool = False,
         do_save_adapter_fusion: bool = False,
-        #adapter_names: Optional[List[List[str]]] = None,
+        adapter_names: Optional[List[List[str]]] = None,
         tb_writer: Optional["SummaryWriter"] = None,
         optimizers: Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR] = (None, None),
         **kwargs,
@@ -291,7 +291,7 @@ class Trainer:
         self.do_save_full_model = do_save_full_model
         self.do_save_adapters = do_save_adapters
         self.do_save_adapter_fusion = do_save_adapter_fusion
-        #self.adapter_names = adapter_names
+        self.adapter_names = adapter_names
         if is_torch_tpu_available():
             # Set an xla_device flag on the model's config.
             # We'll find a more elegant and not need to do this in the future.
@@ -1093,8 +1093,6 @@ class Trainer:
         Prepare :obj:`inputs` before feeding them to the model, converting them to tensors if they are not already and
         handling potential state.
         """
-        print("ASKJSAKL")
-        print(inputs)
         for k, v in inputs.items():
             if isinstance(v, torch.Tensor):
                 inputs[k] = v.to(self.args.device)
@@ -1102,8 +1100,8 @@ class Trainer:
         if self.args.past_index >= 0 and self._past is not None:
             inputs["mems"] = self._past
 
-        # if self.adapter_names:
-        #     inputs["adapter_names"] = self.adapter_names
+        if self.adapter_names:
+            inputs["adapter_names"] = self.adapter_names
 
         return inputs
 
