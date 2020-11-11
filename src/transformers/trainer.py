@@ -1093,6 +1093,8 @@ class Trainer:
         Prepare :obj:`inputs` before feeding them to the model, converting them to tensors if they are not already and
         handling potential state.
         """
+        print("ASKJSAKL")
+        print(inputs)
         for k, v in inputs.items():
             if isinstance(v, torch.Tensor):
                 inputs[k] = v.to(self.args.device)
