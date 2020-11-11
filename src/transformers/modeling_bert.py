@@ -95,6 +95,61 @@ BERT_PRETRAINED_MODEL_ARCHIVE_LIST = [
     # See all BERT models at https://huggingface.co/models?filter=bert
 ]
 
+class BertModelWithHeads(BertModelHeadsMixin, BertPreTrainedModel):
+    def __init__(self, config):
+        super().__init__(config)
+
+        self.bert = BertModel(config)
+
+        self._init_head_modules()
+
+        self.init_weights()
+
+    @add_start_docstrings_to_callable(BERT_INPUTS_DOCSTRING)
+    def forward(
+        self,
+        input_ids=None,
+        attention_mask=None,
+        token_type_ids=None,
+        position_ids=None,
+        head_mask=None,
+        inputs_embeds=None,
+        labels=None,
+        output_attentions=None,
+        output_hidden_states=None,
+        adapter_names=None,
+        head=None,
+        return_dict=None,
+    ):
+        input_ids = input_ids.view(-1, input_ids.size(-1)) if input_ids is not None else None
+        attention_mask = attention_mask.view(-1, attention_mask.size(-1)) if attention_mask is not None else None
+        token_type_ids = token_type_ids.view(-1, token_type_ids.size(-1)) if token_type_ids is not None else None
+        position_ids = position_ids.view(-1, position_ids.size(-1)) if position_ids is not None else None
+
+        return_dict = return_dict if return_dict is not None else self.config.use_return_dict
+
+        outputs = self.bert(
+            input_ids,
+            attention_mask=attention_mask,
+            token_type_ids=token_type_ids,
+            position_ids=position_ids,
+            head_mask=head_mask,
+            inputs_embeds=inputs_embeds,
+            output_attentions=output_attentions,
+            output_hidden_states=output_hidden_states,
+            adapter_names=adapter_names,
+            return_dict=return_dict,
+        )
+
+        outputs = self.forward_head(
+            outputs,
+            head_name=head,
+            attention_mask=attention_mask,
+            labels=labels,
+            return_dict=return_dict,
+        )
+
+        return outputs
 
 def load_tf_weights_in_bert(model, config, tf_checkpoint_path):
     """Load tf checkpoints in a pytorch model."""
