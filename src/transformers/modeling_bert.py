@@ -219,7 +219,6 @@ class BertModelWithHeads(BertModelHeadsMixin, BertPreTrainedModel):
         labels=None,
         output_attentions=None,
         output_hidden_states=None,
-        adapter_names=None,
         head=None,
         return_dict=None,
     ):
@@ -239,7 +238,6 @@ class BertModelWithHeads(BertModelHeadsMixin, BertPreTrainedModel):
             inputs_embeds=inputs_embeds,
             output_attentions=output_attentions,
             output_hidden_states=output_hidden_states,
-            adapter_names=adapter_names,
             return_dict=return_dict,
         )
 
