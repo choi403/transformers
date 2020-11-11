@@ -71,7 +71,7 @@ from .modeling_utils import (
 )
 from .utils import logging
 
-
+BERT_INPUTS_DOCSTRING = 'test'
 logger = logging.get_logger(__name__)
 
 _CONFIG_FOR_DOC = "BertConfig"
